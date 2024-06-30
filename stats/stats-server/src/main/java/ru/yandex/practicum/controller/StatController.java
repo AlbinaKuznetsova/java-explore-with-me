@@ -16,6 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatController {
     private final StatService service;
+
     @PostMapping("/hit")
     public ResponseEntity<RequestDto> createRequest(@RequestBody RequestDto requestDto) {
         return ResponseEntity.ok().body(service.createRequest(requestDto));
