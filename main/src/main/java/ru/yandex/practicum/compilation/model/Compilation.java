@@ -23,8 +23,8 @@ public class Compilation {
     @Column(name = "pinned")
     private Boolean pinned;
     @ManyToMany(cascade = CascadeType.ALL)
-    @JoinTable(name="compilations_events",
-            joinColumns=  @JoinColumn(name="comp_id", referencedColumnName="id"),
-            inverseJoinColumns= @JoinColumn(name="event_id", referencedColumnName="id") )
-    private List<Event> events = new ArrayList<Event>();
+    @JoinTable(name = "compilations_events",
+            joinColumns = @JoinColumn(name = "comp_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "event_id", referencedColumnName = "id"))
+    private List<Event> events = new ArrayList<>();
 }

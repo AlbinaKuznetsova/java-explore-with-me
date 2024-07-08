@@ -110,15 +110,15 @@ public class EventService {
                     if (rangeStartDate == null && rangeEndDate == null) {
                         return eventMapper.toEventFullDto(eventRepository.findAll(pageable).toList());
                     } else {
-                        return eventMapper.toEventFullDto(eventRepository.
-                                findAllByEventDateBetween(rangeStartDate, rangeEndDate, pageable).toList());
+                        return eventMapper.toEventFullDto(eventRepository
+                                .findAllByEventDateBetween(rangeStartDate, rangeEndDate, pageable).toList());
                     }
                 } else {
                     if (rangeStartDate == null && rangeEndDate == null) {
                         return eventMapper.toEventFullDto(eventRepository.findAllByCategoryIdIn(categories, pageable).toList());
                     } else {
-                        return eventMapper.toEventFullDto(eventRepository.
-                                findAllByCategoryIdInAndEventDateBetween(categories, rangeStartDate, rangeEndDate, pageable).toList());
+                        return eventMapper.toEventFullDto(eventRepository
+                                .findAllByCategoryIdInAndEventDateBetween(categories, rangeStartDate, rangeEndDate, pageable).toList());
                     }
                 }
             } else {
@@ -126,15 +126,15 @@ public class EventService {
                     if (rangeStartDate == null && rangeEndDate == null) {
                         return eventMapper.toEventFullDto(eventRepository.findAllByStateIn(states, pageable).toList());
                     } else {
-                        return eventMapper.toEventFullDto(eventRepository.
-                                findAllByStateInAndEventDateBetween(states, rangeStartDate, rangeEndDate, pageable).toList());
+                        return eventMapper.toEventFullDto(eventRepository
+                                .findAllByStateInAndEventDateBetween(states, rangeStartDate, rangeEndDate, pageable).toList());
                     }
                 } else {
                     if (rangeStartDate == null && rangeEndDate == null) {
                         return eventMapper.toEventFullDto(eventRepository.findAllByCategoryIdInAndStateIn(categories, states, pageable).toList());
                     } else {
-                        return eventMapper.toEventFullDto(eventRepository.
-                                findAllByCategoryIdInAndStateInAndEventDateBetween(categories, states, rangeStartDate, rangeEndDate, pageable).toList());
+                        return eventMapper.toEventFullDto(eventRepository
+                                .findAllByCategoryIdInAndStateInAndEventDateBetween(categories, states, rangeStartDate, rangeEndDate, pageable).toList());
                     }
                 }
             }
@@ -144,15 +144,15 @@ public class EventService {
                     if (rangeStartDate == null && rangeEndDate == null) {
                         return eventMapper.toEventFullDto(eventRepository.findAllByInitiatorIdIn(users, pageable).toList());
                     } else {
-                        return eventMapper.toEventFullDto(eventRepository.
-                                findAllByInitiatorIdInAndEventDateBetween(users, rangeStartDate, rangeEndDate, pageable).toList());
+                        return eventMapper.toEventFullDto(eventRepository
+                                .findAllByInitiatorIdInAndEventDateBetween(users, rangeStartDate, rangeEndDate, pageable).toList());
                     }
                 } else {
                     if (rangeStartDate == null && rangeEndDate == null) {
                         return eventMapper.toEventFullDto(eventRepository.findAllByInitiatorIdInAndCategoryIdIn(users, categories, pageable).toList());
                     } else {
-                        return eventMapper.toEventFullDto(eventRepository.
-                                findAllByInitiatorIdInAndCategoryIdInAndEventDateBetween(users, categories, rangeStartDate, rangeEndDate, pageable).toList());
+                        return eventMapper.toEventFullDto(eventRepository
+                                .findAllByInitiatorIdInAndCategoryIdInAndEventDateBetween(users, categories, rangeStartDate, rangeEndDate, pageable).toList());
                     }
                 }
             } else {
@@ -160,8 +160,8 @@ public class EventService {
                     if (rangeStartDate == null && rangeEndDate == null) {
                         return eventMapper.toEventFullDto(eventRepository.findAllByInitiatorIdInAndStateIn(users, states, pageable).toList());
                     } else {
-                        return eventMapper.toEventFullDto(eventRepository.
-                                findAllByInitiatorIdInAndStateInAndEventDateBetween(users, states, rangeStartDate, rangeEndDate, pageable).toList());
+                        return eventMapper.toEventFullDto(eventRepository
+                                .findAllByInitiatorIdInAndStateInAndEventDateBetween(users, states, rangeStartDate, rangeEndDate, pageable).toList());
                     }
                 } else {
                     if (rangeStartDate == null && rangeEndDate == null) {
