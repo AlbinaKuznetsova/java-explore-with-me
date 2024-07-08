@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 import ru.yandex.practicum.category.dto.CategoryDto;
 import ru.yandex.practicum.category.dto.NewCategoryDto;
 import ru.yandex.practicum.category.service.CategoryService;
+
 import javax.validation.Valid;
 
 @RestController
@@ -16,6 +17,7 @@ import javax.validation.Valid;
 @Validated
 public class CategoryAdminController {
     private final CategoryService categoryService;
+
     @PostMapping
     public ResponseEntity<CategoryDto> createCategory(@RequestBody @Valid NewCategoryDto newCategoryDto) {
         return new ResponseEntity<CategoryDto>(categoryService.createCategory(newCategoryDto), HttpStatus.CREATED);

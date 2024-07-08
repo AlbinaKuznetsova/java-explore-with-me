@@ -1,8 +1,9 @@
-package ru.yandex.practicum.event.model;
+package ru.yandex.practicum.request.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.yandex.practicum.request.dto.RequestStatus;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
@@ -23,5 +24,6 @@ public class ParticipationRequest {
     @Column(name = "requester_id")
     private Integer requester;
     @Column(name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private RequestStatus status;
 }

@@ -1,7 +1,6 @@
 package ru.yandex.practicum.exceptions;
 
 import org.hibernate.exception.ConstraintViolationException;
-import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -35,6 +34,12 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiError handleNumberFormatException(NumberFormatException e) {
+        return new ApiError(e.getMessage(), e.getCause().toString(), HttpStatus.BAD_REQUEST.toString());
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiError handleValidationException(ValidationException e) {
         return new ApiError(e.getMessage(), e.getCause().toString(), HttpStatus.BAD_REQUEST.toString());
     }
 

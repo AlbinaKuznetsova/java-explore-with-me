@@ -2,22 +2,19 @@ package ru.yandex.practicum.user.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.category.CategoryMapper;
-import ru.yandex.practicum.category.repository.CategoryRepository;
 import ru.yandex.practicum.exceptions.ObjectNotFoundException;
 import ru.yandex.practicum.user.UserMapper;
 import ru.yandex.practicum.user.dto.NewUserRequest;
 import ru.yandex.practicum.user.dto.UserDto;
-import ru.yandex.practicum.user.dto.UserShortDto;
 import ru.yandex.practicum.user.model.User;
 import ru.yandex.practicum.user.repository.UserRepository;
 
-import javax.validation.Valid;
 import java.util.List;
 import java.util.Optional;
 
@@ -28,13 +25,16 @@ import java.util.Optional;
 public class UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
+
     public List<UserDto> getUsers(Integer[] ids,
                                   Integer from,
                                   Integer size) {
+        int pageNumber = from / size;
+        Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
         if (ids == null) {
-            return userMapper.toUserDto(userRepository.findAllFromSize(from, size));
+            return userMapper.toUserDto(userRepository.findAll(pageable).toList());
         } else {
-            return userMapper.toUserDto(userRepository.findAllByIdsFromSize(ids, from, size));
+            return userMapper.toUserDto(userRepository.findAllByIdIn(ids, pageable));
         }
     }
 

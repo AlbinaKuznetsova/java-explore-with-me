@@ -9,10 +9,11 @@ import ru.yandex.practicum.event.dto.EventFullDto;
 import ru.yandex.practicum.event.dto.EventShortDto;
 import ru.yandex.practicum.event.dto.NewEventDto;
 import ru.yandex.practicum.event.dto.UpdateEventUserRequest;
-import ru.yandex.practicum.event.dto.requests.EventRequestStatusUpdateRequest;
-import ru.yandex.practicum.event.dto.requests.EventRequestStatusUpdateResult;
-import ru.yandex.practicum.event.dto.requests.ParticipationRequestDto;
+import ru.yandex.practicum.request.dto.EventRequestStatusUpdateRequest;
+import ru.yandex.practicum.request.dto.EventRequestStatusUpdateResult;
+import ru.yandex.practicum.request.dto.ParticipationRequestDto;
 import ru.yandex.practicum.event.service.EventService;
+import ru.yandex.practicum.request.service.RequestService;
 
 import javax.validation.Valid;
 import javax.validation.constraints.PositiveOrZero;
@@ -24,6 +25,7 @@ import java.util.List;
 @Validated
 public class PrivateEventController {
     private final EventService eventService;
+    private final RequestService requestService;
 
     @PostMapping
     public ResponseEntity<EventFullDto> createEvent(@RequestBody @Valid NewEventDto newEventDto,
@@ -55,17 +57,17 @@ public class PrivateEventController {
     }
 
     @GetMapping("/{eventId}/requests")
-    public ResponseEntity<ParticipationRequestDto> getRequests(
+    public ResponseEntity<List<ParticipationRequestDto>> getRequests(
             @PathVariable Integer userId,
             @PathVariable Integer eventId) {
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(requestService.getRequestsByEventId(eventId));
     }
 
     @PatchMapping("/{eventId}/requests")
-    public ResponseEntity<EventRequestStatusUpdateResult> updateRequest(
+    public ResponseEntity<EventRequestStatusUpdateResult> updateRequestsStatus(
             @PathVariable Integer userId,
             @PathVariable Integer eventId,
             @RequestBody EventRequestStatusUpdateRequest requests) {
-        return ResponseEntity.ok().body(null);
+        return ResponseEntity.ok().body(requestService.updateRequestsStatus(userId, eventId, requests));
     }
 }

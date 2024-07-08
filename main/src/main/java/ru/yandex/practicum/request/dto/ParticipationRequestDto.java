@@ -1,4 +1,4 @@
-package ru.yandex.practicum.event.dto.requests;
+package ru.yandex.practicum.request.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +14,5 @@ public class ParticipationRequestDto {
     private LocalDateTime created = LocalDateTime.now();
     private Integer event;
     private Integer requester;
-    private String status;
+    private RequestStatus status;
 }

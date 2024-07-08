@@ -25,8 +25,8 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "category_id")
     private Category category;
-
-    //private Integer confirmedRequests;
+    @Column(name = "confirmed_requests")
+    private Integer confirmedRequests = 0;
     @Column(name = "created_date")
     private LocalDateTime createdOn = LocalDateTime.now();
     @Column(name = "description")
@@ -40,17 +40,18 @@ public class Event {
     @JoinColumn(name = "location_id")
     private Location location;
     @Column(name = "paid")
-    private boolean paid;
+    private Boolean paid;
     @Column(name = "participant_limit")
     private Integer participantLimit;
     @Column(name = "published_date")
     private LocalDateTime publishedOn;
     @Column(name = "request_moderation")
-    private boolean requestModeration;
+    private Boolean requestModeration;
     @Column(name = "state")
+    @Enumerated(EnumType.STRING)
     private State state;
     @Column(name = "title")
     private String title;
-
-    //private Integer views;
+    @Transient
+    private Integer views = 0;
 }

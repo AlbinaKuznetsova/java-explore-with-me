@@ -2,6 +2,9 @@ package ru.yandex.practicum.category.service;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.yandex.practicum.category.CategoryMapper;
@@ -23,7 +26,9 @@ public class CategoryService {
     private final CategoryMapper categoryMapper;
 
     public List<CategoryDto> getAllCategories(Integer from, Integer size) {
-        return categoryMapper.toCategoryDto(categoryRepository.findAllFromSize(from, size));
+        int pageNumber = from / size;
+        Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(Sort.Direction.ASC, "id"));
+        return categoryMapper.toCategoryDto(categoryRepository.findAll(pageable).toList());
     }
 
     public CategoryDto getCategory(int catId) {
