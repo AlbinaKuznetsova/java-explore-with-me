@@ -8,7 +8,6 @@ import ru.yandex.practicum.event.dto.State;
 import ru.yandex.practicum.event.model.Event;
 
 import java.time.LocalDateTime;
-import java.util.List;
 import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
@@ -66,7 +65,7 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "AND ev.paid = ?3 " +
             "AND ev.confirmedRequests <> ev.participantLimit")
     Page<Event> findAllByParamsAvailable(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                         Pageable pageable );
+                                         Pageable pageable);
 
     @Query(" select ev from Event as ev " +
             "where ev.eventDate between ?1 and ?2 " +

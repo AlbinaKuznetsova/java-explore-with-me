@@ -175,9 +175,9 @@ public class EventService {
         addToStat(request);
         if (sort == null) {
             sort = "id";
-        } else if (sort.equals("EVENT_DATE")){
+        } else if (sort.equals("EVENT_DATE")) {
             sort = "eventDate";
-        } else if (sort.equals("VIEWS")){
+        } else if (sort.equals("VIEWS")) {
             sort = "views";
         }
         if (categories != null) {
