@@ -25,7 +25,7 @@ public class CategoryPublicController {
     }
 
     @GetMapping("/{catId}")
-    public ResponseEntity<CategoryDto> getCategory(@PathVariable int catId) {
+    public ResponseEntity<CategoryDto> getCategory(@PathVariable Integer catId) {
         return ResponseEntity.ok().body(categoryService.getCategory(catId));
     }
 }

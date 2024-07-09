@@ -24,13 +24,13 @@ public class CategoryAdminController {
     }
 
     @DeleteMapping("/{catId}")
-    public ResponseEntity<?> deleteCategory(@PathVariable int catId) {
+    public ResponseEntity<Void> deleteCategory(@PathVariable Integer catId) {
         categoryService.deleteCategory(catId);
         return new ResponseEntity<>(HttpStatus.NO_CONTENT);
     }
 
     @PatchMapping("/{catId}")
-    public ResponseEntity<CategoryDto> updateCategory(@PathVariable int catId,
+    public ResponseEntity<CategoryDto> updateCategory(@PathVariable Integer catId,
                                                       @RequestBody @Valid NewCategoryDto newCategoryDto) {
         return ResponseEntity.ok().body(categoryService.updateCategory(catId, newCategoryDto));
     }

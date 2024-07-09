@@ -64,32 +64,24 @@ public class EventService {
     }
 
     public EventFullDto getEventById(Integer userId, Integer eventId) {
-        return eventMapper.toEventFullDto(eventRepository.findByIdAndInitiatorId(eventId, userId));
+        return eventMapper.toEventFullDto(eventRepository
+                .findByIdAndInitiatorId(eventId, userId).orElseThrow(() -> new ObjectNotFoundException("Event with id=" + eventId + " was not found",
+                        new Throwable("The required object was not found."))));
     }
 
     public EventFullDto getEventByIdWithStat(Integer eventId, HttpServletRequest request) {
         Integer hits = addToStat(request);
-        Event event = eventRepository.findByIdAndState(eventId, State.PUBLISHED);
-        if (event == null) {
-            log.info("Event with id={} was not found", eventId);
-            throw new ObjectNotFoundException("Event with id=" + eventId + " was not found",
-                    new Throwable("The required object was not found."));
-        } else {
-            event.setViews(hits);
-            eventRepository.save(event);
-            return eventMapper.toEventFullDto(event);
-        }
+        Event event = eventRepository.findByIdAndState(eventId, State.PUBLISHED)
+                .orElseThrow(() -> new ObjectNotFoundException("Event with id=" + eventId + " was not found",
+                        new Throwable("The required object was not found.")));
+        event.setViews(hits);
+        eventRepository.save(event);
+        return eventMapper.toEventFullDto(event);
     }
 
     public Event getEventByIdForCompilation(Integer eventId) {
-        Optional<Event> eventOptional = eventRepository.findById(eventId);
-        if (eventOptional.isEmpty()) {
-            log.info("Event with id={} was not found", eventId);
-            throw new ObjectNotFoundException("Event with id=" + eventId + " was not found",
-                    new Throwable("The required object was not found."));
-        } else {
-            return eventOptional.get();
-        }
+        return eventRepository.findById(eventId).orElseThrow(() -> new ObjectNotFoundException("Event with id=" + eventId + " was not found",
+                new Throwable("The required object was not found.")));
     }
 
     public List<EventFullDto> getEventsByParams(Integer[] users, State[] states, Integer[] categories, String rangeStart,
@@ -183,6 +175,10 @@ public class EventService {
         addToStat(request);
         if (sort == null) {
             sort = "id";
+        } else if (sort.equals("EVENT_DATE")){
+            sort = "eventDate";
+        } else if (sort.equals("VIEWS")){
+            sort = "views";
         }
         if (categories != null) {
             for (Integer idCat : categories) {
@@ -190,6 +186,9 @@ public class EventService {
                     throw new ValidationException("Parametr is not valid", new Throwable("Incorrectly made request."));
                 }
             }
+        }
+        if (paid == null) {
+            paid = false;
         }
         int pageNumber = from / size;
         Pageable pageable = PageRequest.of(pageNumber, size, Sort.by(Sort.Direction.ASC, sort));
@@ -209,7 +208,7 @@ public class EventService {
             if (categories.length == 0) {
                 if (onlyAvailable) {
                     return eventMapper.toEventShortDto(eventRepository.findAllByParamsAvailable(rangeStartDate,
-                            rangeEndDate, sort, from, size));
+                            rangeEndDate, pageable).toList());
                 } else {
                     return eventMapper.toEventShortDto(eventRepository.findAllByEventDateBetween(rangeStartDate,
                             rangeEndDate, pageable).toList());
@@ -217,7 +216,7 @@ public class EventService {
             } else {
                 if (onlyAvailable) {
                     return eventMapper.toEventShortDto(eventRepository.findAllByCategoryIdIn(rangeStartDate,
-                            rangeEndDate, categories, sort, from, size));
+                            rangeEndDate, categories, pageable).toList());
                 } else {
                     return eventMapper.toEventShortDto(eventRepository.findAllByCategoryIdIn(categories, pageable).toList());
                 }
@@ -226,18 +225,18 @@ public class EventService {
             if (categories.length == 0) {
                 if (onlyAvailable) {
                     return eventMapper.toEventShortDto(eventRepository.findAllByParamsAvailable(text,
-                            paid, rangeStartDate, rangeEndDate, sort, from, size));
+                            paid, rangeStartDate, rangeEndDate, pageable).toList());
                 } else {
                     return eventMapper.toEventShortDto(eventRepository.findAllByParamsNotAvailable(text,
-                            paid, rangeStartDate, rangeEndDate, sort, from, size));
+                            paid, rangeStartDate, rangeEndDate, pageable).toList());
                 }
             } else {
                 if (onlyAvailable) {
                     return eventMapper.toEventShortDto(eventRepository.findAllByParamsAvailable(text, categories,
-                            paid, rangeStartDate, rangeEndDate, sort, from, size));
+                            paid, rangeStartDate, rangeEndDate, pageable).toList());
                 } else {
                     return eventMapper.toEventShortDto(eventRepository.findAllByParamsNotAvailable(text, categories,
-                            paid, rangeStartDate, rangeEndDate, sort, from, size));
+                            paid, rangeStartDate, rangeEndDate, pageable).toList());
                 }
             }
         }

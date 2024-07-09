@@ -26,7 +26,7 @@ public class CompilationPublicController {
     }
 
     @GetMapping("/{compId}")
-    public ResponseEntity<CompilationDto> getCompilation(@PathVariable int compId) {
+    public ResponseEntity<CompilationDto> getCompilation(@PathVariable Integer compId) {
         return ResponseEntity.ok().body(compilationService.getCompilation(compId));
     }
 }

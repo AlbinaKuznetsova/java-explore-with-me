@@ -26,7 +26,7 @@ public class StatController {
             @RequestParam(name = "start") String start,
             @RequestParam(name = "end") String end,
             @RequestParam(name = "uris", required = false) String[] uris,
-            @RequestParam(name = "unique", defaultValue = "false") boolean unique) {
+            @RequestParam(name = "unique", defaultValue = "false") Boolean unique) {
         return ResponseEntity.ok().body(service.getStats(start, end, uris, unique));
     }
 }

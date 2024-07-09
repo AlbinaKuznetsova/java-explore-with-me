@@ -36,7 +36,7 @@ public class PublicEventController {
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<EventFullDto> getEventsPublic(@PathVariable Integer id, HttpServletRequest request) {
+    public ResponseEntity<EventFullDto> getEventByIdWithStat(@PathVariable Integer id, HttpServletRequest request) {
         return ResponseEntity.ok().body(eventService.getEventByIdWithStat(id, request));
     }
 

@@ -1,17 +1,15 @@
 package ru.yandex.practicum.event.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import ru.yandex.practicum.category.model.Category;
-import ru.yandex.practicum.event.dto.Location;
 import ru.yandex.practicum.event.dto.State;
 import ru.yandex.practicum.user.model.User;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
-@Data
+@Getter
+@Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity

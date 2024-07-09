@@ -9,13 +9,14 @@ import ru.yandex.practicum.event.model.Event;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
     Page<Event> findAllByInitiatorId(Integer userId, Pageable pageable);
 
-    Event findByIdAndInitiatorId(Integer id, Integer initiatorId);
+    Optional<Event> findByIdAndInitiatorId(Integer id, Integer initiatorId);
 
-    Event findByIdAndState(Integer id, State state);
+    Optional<Event> findByIdAndState(Integer id, State state);
 
     Page<Event> findAllByEventDateBetween(LocalDateTime rangeStartDate, LocalDateTime rangeEndDate, Pageable pageable);
 
@@ -50,51 +51,45 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
                                                                 State[] states, Pageable pageable);
 
 
-    @Query(value = " select * from events as ev " +
-            "where ev.event_date between ?3 and ?4 " +
-            "AND (ev.annotation ILIKE %?1% OR ev.description ILIKE %?1%) " +
+    @Query(" select ev from Event as ev " +
+            "where ev.eventDate between ?3 and ?4 " +
+            "AND (lower(ev.annotation) LIKE lower(concat('%', ?1,'%')) OR lower(ev.description) LIKE lower(concat('%', ?1,'%'))) " +
             "AND ev.paid = ?2 " +
-            "AND ev.confirmed_requests <> ev.participant_limit " +
-            "ORDER BY ?5 ASC LIMIT ?7 OFFSET ?6 ", nativeQuery = true)
-    List<Event> findAllByParamsAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                         String sort, Integer from, Integer size);
+            "AND ev.confirmedRequests <> ev.participantLimit ")
+    Page<Event> findAllByParamsAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                         Pageable pageable);
 
-    @Query(value = " select * from events as ev " +
-            "where ev.event_date between ?4 and ?5 " +
-            "AND (ev.annotation ILIKE %?1% OR ev.description ILIKE %?1%) " +
-            "AND ev.category_id IN (?2) " +
+    @Query(" select ev from Event as ev " +
+            "where ev.eventDate between ?4 and ?5 " +
+            "AND (lower(ev.annotation) LIKE lower(concat('%', ?1,'%')) OR lower(ev.description) LIKE lower(concat('%', ?1,'%'))) " +
+            "AND ev.category.id IN (?2) " +
             "AND ev.paid = ?3 " +
-            "AND ev.confirmed_requests <> ev.participant_limit " +
-            "ORDER BY ?6 ASC LIMIT ?8 OFFSET ?7 ", nativeQuery = true)
-    List<Event> findAllByParamsAvailable(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                         String sort, Integer from, Integer size);
+            "AND ev.confirmedRequests <> ev.participantLimit")
+    Page<Event> findAllByParamsAvailable(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                         Pageable pageable );
 
-    @Query(value = " select * from events as ev " +
-            "where ev.event_date between ?1 and ?2 " +
-            "AND ev.confirmed_requests <> ev.participant_limit " +
-            "ORDER BY ?3 ASC LIMIT ?5 OFFSET ?4 ", nativeQuery = true)
-    List<Event> findAllByParamsAvailable(LocalDateTime rangeStart, LocalDateTime rangeEnd, String sort, Integer from, Integer size);
+    @Query(" select ev from Event as ev " +
+            "where ev.eventDate between ?1 and ?2 " +
+            "AND ev.confirmedRequests <> ev.participantLimit ")
+    Page<Event> findAllByParamsAvailable(LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable);
 
-    @Query(value = " select * from events as ev " +
-            "where ev.event_date between ?4 and ?5 " +
-            "AND (ev.annotation ILIKE %?1% OR ev.description ILIKE %?1%) " +
-            "AND ev.category_id IN (?2) " +
-            "AND ev.paid = ?3 " +
-            "ORDER BY ?6 ASC LIMIT ?8 OFFSET ?7 ", nativeQuery = true)
-    List<Event> findAllByParamsNotAvailable(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                            String sort, Integer from, Integer size);
+    @Query(" select ev from Event as ev " +
+            "where ev.eventDate between ?4 and ?5 " +
+            "AND (lower(ev.annotation) LIKE lower(concat('%', ?1,'%')) OR lower(ev.description) LIKE lower(concat('%', ?1,'%'))) " +
+            "AND ev.category.id IN (?2) " +
+            "AND ev.paid = ?3 ")
+    Page<Event> findAllByParamsNotAvailable(String text, Integer[] categories, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                            Pageable pageable);
 
-    @Query(value = " select * from events as ev " +
-            "where ev.event_date between ?3 and ?4 " +
-            "AND (ev.annotation ILIKE %?1% OR ev.description ILIKE %?1%) " +
-            "AND ev.paid = ?2 " +
-            "ORDER BY ?5 ASC LIMIT ?7 OFFSET ?6 ", nativeQuery = true)
-    List<Event> findAllByParamsNotAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
-                                            String sort, Integer from, Integer size);
+    @Query(" select ev from Event as ev " +
+            "where ev.eventDate between ?3 and ?4 " +
+            "AND (lower(ev.annotation) LIKE lower(concat('%', ?1,'%')) OR lower(ev.description) LIKE lower(concat('%', ?1,'%'))) " +
+            "AND ev.paid = ?2 ")
+    Page<Event> findAllByParamsNotAvailable(String text, Boolean paid, LocalDateTime rangeStart, LocalDateTime rangeEnd,
+                                            Pageable pageable);
 
-    @Query(value = " select * from events as ev " +
-            "where ev.event_date between ?1 and ?2 " +
-            "AND ev.category_id IN (?3) " +
-            "ORDER BY ?4 ASC LIMIT ?6 OFFSET ?5 ", nativeQuery = true)
-    List<Event> findAllByCategoryIdIn(LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer[] categories, String sort, Integer from, Integer size);
+    @Query(" select ev from Event as ev " +
+            "where ev.eventDate between ?1 and ?2 " +
+            "AND ev.category.id IN (?3) ")
+    Page<Event> findAllByCategoryIdIn(LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer[] categories, Pageable pageable);
 }

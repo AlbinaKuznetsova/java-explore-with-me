@@ -16,6 +16,7 @@ import ru.yandex.practicum.request.dto.ParticipationRequestDto;
 import ru.yandex.practicum.request.dto.RequestStatus;
 import ru.yandex.practicum.request.model.ParticipationRequest;
 import ru.yandex.practicum.request.repository.RequestRepository;
+import ru.yandex.practicum.user.service.UserService;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -30,9 +31,10 @@ public class RequestService {
     private final RequestRepository repository;
     private final RequestMapper requestMapper;
     private final EventService eventService;
+    private final UserService userService;
 
     public ParticipationRequestDto createRequest(Integer userId, Integer eventId) {
-        if (repository.findByRequesterAndEvent(userId, eventId) != null) {
+        if (repository.findByRequesterIdAndEventId(userId, eventId).isPresent()) {
             throw new ForbiddenOperationException("User has already created the request", new Throwable("Integrity constraint has been violated."));
         }
         Event event = eventService.getEventByIdForCompilation(eventId);
@@ -43,8 +45,8 @@ public class RequestService {
         }
         ParticipationRequest newRequest = new ParticipationRequest();
         newRequest.setCreated(LocalDateTime.now());
-        newRequest.setRequester(userId);
-        newRequest.setEvent(eventId);
+        newRequest.setRequester(userService.getUserById(userId));
+        newRequest.setEvent(eventService.getEventByIdForCompilation(eventId));
         if (!event.getRequestModeration() || event.getParticipantLimit().equals(0)) {
             newRequest.setStatus(RequestStatus.CONFIRMED);
             eventService.cancelOrConfirmRequest(eventId, true);
@@ -56,11 +58,11 @@ public class RequestService {
     }
 
     public List<ParticipationRequestDto> getRequestsByUserId(Integer userId) {
-        return requestMapper.toParticipationRequestDto(repository.findAllByRequester(userId));
+        return requestMapper.toParticipationRequestDto(repository.findAllByRequesterId(userId));
     }
 
     public List<ParticipationRequestDto> getRequestsByEventId(Integer eventId) {
-        return requestMapper.toParticipationRequestDto(repository.findAllByEvent(eventId));
+        return requestMapper.toParticipationRequestDto(repository.findAllByEventId(eventId));
     }
 
     public ParticipationRequestDto cancelRequest(Integer userId, Integer requestId) {
@@ -70,12 +72,12 @@ public class RequestService {
                     new Throwable("The required object was not found."));
         } else {
             ParticipationRequest request = requestOptional.get();
-            if (!request.getRequester().equals(userId)) {
+            if (!request.getRequester().getId().equals(userId)) {
                 throw new ForbiddenOperationException("Request with id=" + requestId + " was not found",
                         new Throwable("The required object was not found."));
             } else {
                 if (request.getStatus().equals(RequestStatus.CONFIRMED)) {
-                    eventService.cancelOrConfirmRequest(request.getEvent(), false);
+                    eventService.cancelOrConfirmRequest(request.getEvent().getId(), false);
                 }
                 request.setStatus(RequestStatus.CANCELED);
                 request = repository.save(request);
