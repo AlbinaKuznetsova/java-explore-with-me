@@ -9,14 +9,13 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
 @Service
 public class Client {
     protected final RestTemplate rest;
-    private static final String serverUrl = "http://localhost:9090";
+    private static final String serverUrl = "http://stats-server:9090";
 
     @Autowired
     public Client(RestTemplateBuilder builder) {
@@ -34,8 +33,8 @@ public class Client {
     }
 
     public ResponseEntity<List<RequestForStatDto>> getStats(
-            LocalDateTime start,
-            LocalDateTime end,
+            String start,
+            String end,
             String[] uris,
             boolean unique) {
         Map<String, Object> parameters = Map.of(

@@ -9,6 +9,7 @@ import ru.yandex.practicum.RequestForStatDto;
 import ru.yandex.practicum.repository.RequestRepository;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 
 @Service
@@ -17,27 +18,34 @@ import java.util.List;
 @RequiredArgsConstructor
 public class StatService {
     private final RequestRepository repository;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
     public RequestDto createRequest(RequestDto requestDto) {
         log.info("Create Request " + requestDto);
         return repository.save(requestDto);
     }
 
-    public List<RequestForStatDto> getStats(LocalDateTime start,
-                                            LocalDateTime end,
+    public List<RequestForStatDto> getStats(String start,
+                                            String end,
                                             String[] uris,
                                             boolean unique) {
-        if (unique) {
-            if (uris == null) {
-                return repository.getStatUniqueIpWithoutUris(start, end);
-            } else {
-                return repository.getStatUniqueIp(start, end, uris);
-            }
+        LocalDateTime newStart = LocalDateTime.parse(start, formatter);
+        LocalDateTime newEnd = LocalDateTime.parse(end, formatter);
+        if (newStart.isAfter(newEnd)) {
+            throw new IllegalArgumentException("Incorrect dates");
         } else {
-            if (uris == null) {
-                return repository.getStatWithoutUris(start, end);
+            if (unique) {
+                if (uris == null) {
+                    return repository.getStatUniqueIpWithoutUris(newStart, newEnd);
+                } else {
+                    return repository.getStatUniqueIp(newStart, newEnd, uris);
+                }
             } else {
-                return repository.getStat(start, end, uris);
+                if (uris == null) {
+                    return repository.getStatWithoutUris(newStart, newEnd);
+                } else {
+                    return repository.getStat(newStart, newEnd, uris);
+                }
             }
         }
     }
