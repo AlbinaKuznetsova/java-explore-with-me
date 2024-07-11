@@ -375,6 +375,10 @@ public class EventService {
         }
     }
 
+    public List<EventShortDto> findAllByInitiatorIdIn(List<Integer> ids) {
+        return eventMapper.toEventShortDto(eventRepository.findAllByInitiatorIdInAndState(ids, State.PUBLISHED));
+    }
+
     private Integer addToStat(HttpServletRequest request) {
         try {
             RequestDto statRequest = new RequestDto();
