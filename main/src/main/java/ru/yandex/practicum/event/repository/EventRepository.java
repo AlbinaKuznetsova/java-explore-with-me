@@ -8,6 +8,7 @@ import ru.yandex.practicum.event.dto.State;
 import ru.yandex.practicum.event.model.Event;
 
 import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
 
 public interface EventRepository extends JpaRepository<Event, Integer> {
@@ -91,4 +92,6 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "where ev.eventDate between ?1 and ?2 " +
             "AND ev.category.id IN (?3) ")
     Page<Event> findAllByCategoryIdIn(LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer[] categories, Pageable pageable);
+
+    List<Event> findAllByInitiatorIdInAndState(List<Integer> userIds, State state);
 }
